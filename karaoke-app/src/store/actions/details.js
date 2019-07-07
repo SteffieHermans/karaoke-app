@@ -1,5 +1,6 @@
 import { detailsStates } from '../states';
 import { FETCH_DETAILS_START, FETCH_DETAILS_SUCCESS, FETCH_DETAILS_FAIL } from './actionTypes';
+import events, { Counter } from './eventServices';
 
 /* * * * * * * * * * * * * * *
 * ACTIVE ACTION TYPE METHODS *

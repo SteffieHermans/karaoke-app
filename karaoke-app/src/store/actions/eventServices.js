@@ -12,7 +12,6 @@ const handleResponses = async (response = null) => {
                     return true;
             }
         } else {
-            let errorData = null;
             switch (response.status) {
                 case 400:
                     errorMessage = 'Song lyrics could not be found.';
@@ -35,8 +34,7 @@ const fetchData = async (methodType, path, bodyData) => {
     const data = {
         method: methodType,
         headers: requestHeaders,
-        body: bodyData ? JSON.stringify(bodyData) : null,
-        credentials: 'include'
+        body: bodyData ? JSON.stringify(bodyData) : null
     };
 
     const endpoint = `${API_BASE}${path}`;
