@@ -27,24 +27,38 @@ const Home = props => {
     const [validSongTitle, setValidSongTitle] = useState(false);
 
     const [linesArray, setLinesArray] = useState([]);
+    const [playLyrics, setPlayLyrics] = useState(false);
+    let lineNumber = 0;
+    const [currentLine, setCurrentLine] = useState('');
 
+    //check validity of search form
     useEffect(() => {
-        const valid = isFullString(artist) && !isFullString(songTitle);
+        const valid = isFullString(artist) && isFullString(songTitle);
         setFormValid(valid);
     }, [artist, songTitle]);
 
+    //parse lyrics into array of lyric lines
     useEffect(() => {
         if(lyricReady){
             setLinesArray(lyricData.lyrics.split(/\n/).filter(line => {
                 return isFullString(line);
             }));
+            setPlayLyrics(true);
+        };
+    }, [lyricReady]);
 
-        }
-    }, [lyricReady])
+    useEffect(() => {
+        let lyricIntervalId = null;
+        if(playLyrics){
+            lyricIntervalId = setInterval( showLinesOneByOne, 1000);
+        };
+        return () => clearInterval(lyricIntervalId);
+    }, [playLyrics]);
 
     const showLinesOneByOne = () => {
-        
-    }
+        setCurrentLine(linesArray[lineNumber]);
+        lineNumber++;
+    };
 
     const lyrics = !lyricReady ? (
         <div>
@@ -52,7 +66,7 @@ const Home = props => {
         </div>
     ) : (
         <div>
-            {console.log(linesArray)}
+            <p>{currentLine}</p>
         </div>
     );
 
@@ -106,8 +120,13 @@ const Home = props => {
                 }}
             />
             <button
-                disabled={formValid}
-                {...getEventAttributes({click: () => { onFetchSongLyrics(artist, songTitle); }})}
+                disabled={!formValid}
+                {...getEventAttributes({click: () => {
+                    setPlayLyrics(false);
+                    setCurrentLine('');
+                    lineNumber = 0;
+                    onFetchSongLyrics(artist, songTitle);
+                }})}
             >
                 Search
             </button>
